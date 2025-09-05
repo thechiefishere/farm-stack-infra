@@ -122,8 +122,8 @@ resource "aws_iam_policy_attachment" "john_backend_codebuild_role_policy_attachm
   policy_arn = aws_iam_policy.john_backend_codebuild_role_policy.arn
 }
 
-resource "aws_codebuild_project" "john_backend_codebuild_plan" {
-  name           = "john_backend_codebuild_plan"
+resource "aws_codebuild_project" "john_backend_codebuild_build" {
+  name           = "john_backend_codebuild_build"
   service_role = aws_iam_role.john_backend_codebuild_role.arn
   artifacts {
     type = "CODEPIPELINE"
@@ -136,12 +136,12 @@ resource "aws_codebuild_project" "john_backend_codebuild_plan" {
   }
   source {
     type            = "CODEPIPELINE"
-    buildspec       = "buildspec_plan.yml"
+    buildspec       = "buildspec_build.yml"
   }
 }
 
-resource "aws_codebuild_project" "john_backend_codebuild_apply" {
-  name           = "john_backend_codebuild_apply"
+resource "aws_codebuild_project" "john_backend_codebuild_deploy" {
+  name           = "john_backend_codebuild_deploy"
   service_role = aws_iam_role.john_backend_codebuild_role.arn
   artifacts {
     type = "CODEPIPELINE"
@@ -154,7 +154,7 @@ resource "aws_codebuild_project" "john_backend_codebuild_apply" {
   }
   source {
     type            = "CODEPIPELINE"
-    buildspec       = "buildspec_apply.yml"
+    buildspec       = "buildspec_deploy.yml"
   }
 }
 
@@ -163,7 +163,7 @@ data "aws_ssm_parameter" "john_github_token" {
 }
 
 resource "aws_codepipeline" "john_backend_pipeline" {
-  name     = "john_backend_infra_pipeline"
+  name     = "john_backend_pipeline"
   role_arn = aws_iam_role.john_backend_codepipeline_role.arn
   artifact_store {
     location = aws_s3_bucket.john_backend_codepipeline_artifact_bucket.bucket
@@ -181,44 +181,44 @@ resource "aws_codepipeline" "john_backend_pipeline" {
 
       configuration = {
         Owner          = "thechiefishere"
-        Repo           = "farm-stack-infra"
+        Repo           = "farm-stack-backend"
         Branch         = "main"
         OAuthToken     = data.aws_ssm_parameter.john_github_token.value
       }
     }
   }
   stage {
-    name = "Plan"
+    name = "Build"
 
     action {
-      name             = "Plan"
+      name             = "Build"
       category         = "Build"
       owner            = "AWS"
       provider         = "CodeBuild"
       input_artifacts  = ["source_output"]
-      output_artifacts = ["build_output_plan"]
+      output_artifacts = ["build_output"]
       version          = "1"
 
       configuration = {
-        ProjectName    = aws_codebuild_project.john_backend_codebuild_plan.id
+        ProjectName    = aws_codebuild_project.john_backend_codebuild_build.id
       }
     }
   }
 
   stage {
-    name = "Apply"
+    name = "Deploy"
 
     action {
-      name             = "Apply"
+      name             = "Deploy"
       category         = "Build"
       owner            = "AWS"
       provider         = "CodeBuild"
       input_artifacts  = ["source_output"]
-      output_artifacts = ["build_output_apply"]
+      output_artifacts = ["deploy_output"]
       version          = "1"
 
       configuration = {
-        ProjectName    = aws_codebuild_project.john_backend_codebuild_apply.id
+        ProjectName    = aws_codebuild_project.john_backend_codebuild_deploy.id
       }
     }
   }
