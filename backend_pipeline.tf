@@ -158,10 +158,6 @@ resource "aws_codebuild_project" "john_backend_codebuild_deploy" {
   }
 }
 
-data "aws_ssm_parameter" "john_github_token" {
-  name = "john-github-token"
-}
-
 resource "aws_codepipeline" "john_backend_pipeline" {
   name     = "john_backend_pipeline"
   role_arn = aws_iam_role.john_backend_codepipeline_role.arn

@@ -1,7 +1,3 @@
-provider "aws" {
-    region = "us-east-1"
-}
-
 resource "aws_s3_bucket" "john_frontend_codepipeline_artifact_bucket" {
   bucket = "john-frontend-codepipeline-artifact-bucket"
 }
@@ -156,10 +152,6 @@ resource "aws_codebuild_project" "john_frontend_codebuild_deploy" {
     type            = "CODEPIPELINE"
     buildspec       = "buildspec_deploy.yml"
   }
-}
-
-data "aws_ssm_parameter" "john_github_token" {
-  name = "john-github-token"
 }
 
 resource "aws_codepipeline" "john_frontend_pipeline" {
