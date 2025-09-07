@@ -75,7 +75,7 @@ resource "aws_security_group" "john_frontend_sg" {
 resource "aws_security_group" "john_backend_sg" {
   name        = "john_backend_sg"
   description = "Backend server sg"
-  vpc_id      = aws_vpc.vpc.id
+  vpc_id      = aws_vpc.john_vpc.id
 
   ingress {
     from_port   = 22
