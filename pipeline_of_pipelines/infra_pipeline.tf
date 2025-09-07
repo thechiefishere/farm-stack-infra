@@ -43,6 +43,13 @@ resource "aws_iam_policy" "john_infra_codepipline_role_policy" {
         Effect   = "Allow"
         Resource = "*"
       },
+      {
+        Action = [
+          "ssm:*",
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      }
     ]
   })
 }

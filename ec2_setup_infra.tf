@@ -3,7 +3,8 @@ resource "aws_vpc" "john_vpc" {
   instance_tenancy = "default"
 
   tags = {
-    Name = "john_vpc"
+    Name = "john_vpc",
+    createdby = "john.toriola@cecureintel.com"
   }
 }
 
@@ -105,7 +106,8 @@ resource "aws_instance" "john_backend_server" {
   vpc_security_group_ids = [aws_security_group.john_backend_sg.id]
 
   tags = {
-    Name = "john_backend_server"
+    Name = "john_backend_server",
+    createdby = "john.toriola@cecureintel.com"
   }
 }
 
@@ -116,6 +118,7 @@ resource "aws_instance" "john_frontend_server" {
   vpc_security_group_ids = [aws_security_group.john_frontend_sg.id]
 
   tags = {
-    Name = "john_frontend_server"
+    Name = "john_frontend_server",
+    createdby = "john.toriola@cecureintel.com"
   }
 }
