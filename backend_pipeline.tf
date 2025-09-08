@@ -2,15 +2,6 @@ provider "aws" {
     region = "us-east-1"
 }
 
-terraform {
-  backend "s3" {
-    bucket = "john-terraform-state-bucket"
-    key    = "farm-stack/terraform.tfstate"
-    region = "us-east-1"
-    dynamodb_table = "terraform-state-locks"
-  }
-}
-
 resource "aws_s3_bucket" "john_backend_codepipeline_artifact_bucket" {
   bucket = "john-backend-codepipeline-artifact-bucket"
 }
