@@ -18,6 +18,25 @@ phases:
     commands:
       - pwd
       - ls
+      - echo ">>> AWS identity"
+      - aws sts get-caller-identity || true
+      - echo ">>> AWS env"
+      - env | grep -i AWS || true
+      - echo ">>> bucket location"
+      - aws s3api get-bucket-location --bucket john-terraform-state-bucket-002 || true
+      - echo ">>> bucket encryption"
+      - aws s3api get-bucket-encryption --bucket john-terraform-state-bucket-002 || true
+      - echo ">>> bucket policy (if any)"
+      - aws s3api get-bucket-policy --bucket john-terraform-state-bucket-002 || true
+      - echo ">>> bucket acl"
+      - aws s3api get-bucket-acl --bucket john-terraform-state-bucket-002 || true
+      - echo ">>> list objects at key path"
+      - aws s3api list-objects --bucket john-terraform-state-bucket-002 --prefix infra/terraform.tfstate || true
+      - echo ">>> dynamodb table"
+      - aws dynamodb describe-table --table-name terraform-state-locks --region us-east-1 || true
+      - echo ">>> try reading object (if key exists)"
+      - aws s3 cp s3://john-terraform-state-bucket-002/infra/terraform.tfstate - || true
+      - echo ">>> end debug"
       - terraform init -no-color
       - terraform plan
 
