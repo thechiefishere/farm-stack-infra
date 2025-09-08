@@ -6,6 +6,10 @@ resource "aws_s3_bucket" "john_infra_codepipeline_artifact_bucket" {
   bucket = "john-infra-codepipeline-artifact-bucket"
 }
 
+resource "aws_s3_bucket" "john_terraform_state_bucket" {
+  bucket = "john-terraform-state-bucket"
+}
+
 resource "aws_iam_role" "john_infra_codepipeline_role" {
   name = "john_infra_codepipeline_role"
   assume_role_policy = jsonencode({
