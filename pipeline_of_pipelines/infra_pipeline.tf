@@ -7,7 +7,23 @@ resource "aws_s3_bucket" "john_infra_codepipeline_artifact_bucket" {
 }
 
 resource "aws_s3_bucket" "john_terraform_state_bucket" {
-  bucket = "john-terraform-state-bucket"
+  bucket = "john-terraform-state-bucket-005"
+}
+
+resource "aws_dynamodb_table" "terraform_locks" {
+  name         = "terraform-state-locks"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "LockID"
+
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
+
+  tags = {
+    Name = "terraform-locks"
+    createdby = "john.toriola@cecureintel.com"
+  }
 }
 
 resource "aws_iam_role" "john_infra_codepipeline_role" {
