@@ -133,6 +133,11 @@ resource "aws_codebuild_project" "john_backend_codebuild_build" {
     image                       = "aws/codebuild/amazonlinux2-x86_64-standard:4.0"
     type                        = "LINUX_CONTAINER"
     image_pull_credentials_type = "CODEBUILD"
+
+    environment_variable {
+      name  = "SERVER_KEY"
+      value = data.aws_ssm_parameter.john_key.value
+    }
   }
   source {
     type            = "CODEPIPELINE"
@@ -151,6 +156,11 @@ resource "aws_codebuild_project" "john_backend_codebuild_deploy" {
     image                       = "aws/codebuild/amazonlinux2-x86_64-standard:4.0"
     type                        = "LINUX_CONTAINER"
     image_pull_credentials_type = "CODEBUILD"
+
+    environment_variable {
+      name  = "SERVER_KEY"
+      value = data.aws_ssm_parameter.john_key.value
+    }
   }
   source {
     type            = "CODEPIPELINE"

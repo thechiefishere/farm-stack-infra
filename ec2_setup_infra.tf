@@ -104,6 +104,7 @@ resource "aws_instance" "john_backend_server" {
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.john_public_subnet.id
   vpc_security_group_ids = [aws_security_group.john_backend_sg.id]
+  key_name = "jbaba-key"
 
   tags = {
     Name = "john_backend_server",
@@ -116,6 +117,7 @@ resource "aws_instance" "john_frontend_server" {
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.john_public_subnet.id
   vpc_security_group_ids = [aws_security_group.john_frontend_sg.id]
+  key_name = "jbaba-key"
 
   tags = {
     Name = "john_frontend_server",
