@@ -129,7 +129,7 @@ resource "aws_codebuild_project" "john_backend_codebuild_build" {
     type = "CODEPIPELINE"
   }
   environment {
-    compute_type                = "BUILD_GENERAL1_SMALL"
+    compute_type                = "BUILD_GENERAL1_MEDIUM"
     image                       = "aws/codebuild/amazonlinux2-x86_64-standard:7.0"
     type                        = "LINUX_CONTAINER"
     image_pull_credentials_type = "CODEBUILD"
@@ -152,7 +152,7 @@ resource "aws_codebuild_project" "john_backend_codebuild_deploy" {
     type = "CODEPIPELINE"
   }
   environment {
-    compute_type                = "BUILD_GENERAL1_SMALL"
+    compute_type                = "BUILD_GENERAL1_MEDIUM"
     image                       = "aws/codebuild/amazonlinux2-x86_64-standard:7.0"
     type                        = "LINUX_CONTAINER"
     image_pull_credentials_type = "CODEBUILD"
