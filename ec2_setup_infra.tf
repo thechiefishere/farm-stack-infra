@@ -119,6 +119,19 @@ resource "aws_instance" "john_frontend_server" {
   vpc_security_group_ids = [aws_security_group.john_frontend_sg.id]
   key_name = "jbaba-key"
 
+  user_data = <<EOF
+#!/bin/bash
+# Update package list and install Nginx
+apt-get update
+apt-get install -y nginx
+# Start Nginx and enable it on boot
+systemctl start nginx
+systemctl enable nginx
+# Ensure /var/www/html exists and has correct permissions
+mkdir -p /var/www/html
+chown -R www-data:www-data /var/www/html
+EOF
+
   tags = {
     Name = "john_frontend_server",
     createdby = "john.toriola@cecureintel.com"
