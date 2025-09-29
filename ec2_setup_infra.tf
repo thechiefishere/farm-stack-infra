@@ -106,6 +106,13 @@ resource "aws_instance" "john_backend_server" {
   vpc_security_group_ids = [aws_security_group.john_backend_sg.id]
   key_name = "jbaba-key"
 
+  user_data = <<EOF
+#!/bin/bash
+# Update package list and install Nginx
+apt-get update
+apt-get install -y python3 python3-pip
+EOF
+
   tags = {
     Name = "john_backend_server",
     createdby = "john.toriola@cecureintel.com"
