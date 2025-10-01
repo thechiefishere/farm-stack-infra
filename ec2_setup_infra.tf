@@ -104,20 +104,56 @@ resource "aws_instance" "john_backend_server" {
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.john_public_subnet.id
   vpc_security_group_ids = [aws_security_group.john_backend_sg.id]
-  key_name = "jbaba-key"
+  key_name               = "jbaba-key"
 
   user_data = <<EOF
 #!/bin/bash
-# Update package list and install Nginx
-apt-get update
-apt-get install -y python3 python3-pip
+set -e
+
+# Update package list
+apt-get update -y
+
+# Install Python
+apt-get install -y python3 python3-pip python3-venv
+
+# Install MongoDB
+apt-get install -y gnupg curl
+curl -fsSL https://pgp.mongodb.com/server-6.0.asc | gpg -o /usr/share/keyrings/mongodb-server-6.0.gpg --dearmor
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -sc)/mongodb-org/6.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+apt-get update -y
+apt-get install -y mongodb-org
+
+# Start MongoDB service
+systemctl start mongod
+systemctl enable mongod
+
+# Wait for MongoDB to fully start
+sleep 5
+
+# Create MongoDB admin user
+mongosh <<EOM
+use admin
+db.createUser({
+  user: "username",
+  pwd: "password",
+  roles: [{ role: "root", db: "admin" }]
+})
+EOM
+
+# Create application database
+mongosh <<EOM
+use dbname
+db.createCollection("test")
+EOM
+
 EOF
 
   tags = {
-    Name = "john_backend_server",
+    Name      = "john_backend_server"
     createdby = "john.toriola@cecureintel.com"
   }
 }
+
 
 resource "aws_instance" "john_frontend_server" {
   ami                    = "ami-020cba7c55df1f615"
