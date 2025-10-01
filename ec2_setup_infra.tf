@@ -85,8 +85,8 @@ resource "aws_security_group" "john_backend_sg" {
   }
 
   ingress {
-    from_port   = 3000
-    to_port     = 3000
+    from_port   = 3001
+    to_port     = 3001
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -117,15 +117,19 @@ apt-get update -y
 apt-get install -y python3 python3-pip python3-venv
 
 # Install MongoDB
-apt-get install -y gnupg curl
-curl -fsSL https://pgp.mongodb.com/server-6.0.asc | gpg -o /usr/share/keyrings/mongodb-server-6.0.gpg --dearmor
-echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -sc)/mongodb-org/6.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list
-apt-get update -y
-apt-get install -y mongodb-org
-
-# Start MongoDB service
+sudo apt-get install -y gnupg curl
+curl -fsSL https://pgp.mongodb.com/server-6.0.asc | sudo gpg -o /usr/share/keyrings/mongodb-server-6.0.gpg --dearmor
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+sudo apt-get update -y
+sudo apt-get install -y mongodb-org
 systemctl start mongod
 systemctl enable mongod
+
+# Install pm2
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+sudo apt install -y nodejs
+sudo npm install -g pm2
+
 
 # Wait for MongoDB to fully start
 sleep 5
