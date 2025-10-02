@@ -147,7 +147,11 @@ EOM
 # Create application database
 mongosh <<EOM
 use dbname
-db.createCollection("test")
+db.createUser({
+  user: "username",
+  pwd: "password",
+  roles: [{ role: "readWrite", db: "dbname" }]
+})
 EOM
 
 EOF
